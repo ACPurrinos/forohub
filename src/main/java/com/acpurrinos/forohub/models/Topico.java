@@ -23,39 +23,48 @@ public class Topico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-private Long id;
+    private Long id;
 
-private String titulo;
-private String mensaje;
-@Column(name="id_usuario")
-private Long idUsuario;
+    private String titulo;
+    private String mensaje;
+    @Column(name = "id_usuario")
+    private Long idUsuario;
 
-@Column(name="fecha_creacion")
-private LocalDateTime fechaDeCreacion= LocalDateTime.now();
-@Enumerated(EnumType.STRING)
-private Estado estado = Estado.ABIERTO;
-@Enumerated(EnumType.STRING)
-@Column(name="nombre_curso")
-private Curso nombreCurso;
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaDeCreacion = LocalDateTime.now();
+    @Enumerated(EnumType.STRING)
+    private Estado estado = Estado.ABIERTO;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "nombre_curso")
+    private Curso nombreCurso;
 
     public Topico(DatosRegistroTopico datosRegistroTopico /*,Curso curso*/) {
-        this.idUsuario= datosRegistroTopico.idUsuario();
-        this.nombreCurso=datosRegistroTopico.nombreCurso();
-        this.titulo=datosRegistroTopico.titulo();
-        this.mensaje= datosRegistroTopico.mensaje();
+        this.idUsuario = datosRegistroTopico.idUsuario();
+        this.nombreCurso = datosRegistroTopico.nombreCurso();
+        this.titulo = datosRegistroTopico.titulo();
+        this.mensaje = datosRegistroTopico.mensaje();
         //this.nombreCurso=curso;
     }
 
     public void actualizarTopico(DatosActualizacionTopico datosActualizacionTopico) {
-        if(datosActualizacionTopico.nombreCurso() != null){
-        this.nombreCurso=datosActualizacionTopico.nombreCurso();}
-        if(datosActualizacionTopico.titulo() !=null){
-        this.titulo= datosActualizacionTopico.titulo();}
-        if(datosActualizacionTopico.mensaje() !=null){
-        this.mensaje= datosActualizacionTopico.mensaje();}
-        if(datosActualizacionTopico.idUsuario() !=null){
-        this.idUsuario= datosActualizacionTopico.idUsuario();}
-    }}
+        if (datosActualizacionTopico.nombreCurso() != null) {
+            this.nombreCurso = datosActualizacionTopico.nombreCurso();
+        }
+        if (datosActualizacionTopico.titulo() != null) {
+            this.titulo = datosActualizacionTopico.titulo();
+        }
+        if (datosActualizacionTopico.mensaje() != null) {
+            this.mensaje = datosActualizacionTopico.mensaje();
+        }
+        if (datosActualizacionTopico.idUsuario() != null) {
+            this.idUsuario = datosActualizacionTopico.idUsuario();
+        }
+    }
 
+
+    public void cerrarTopico() {
+        this.estado = Estado.CERRADO;
+    }
+}
 
 
