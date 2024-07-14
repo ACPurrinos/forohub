@@ -19,8 +19,8 @@ public enum Curso {
     private final String nombreCurso;
     private final String categoria;
 
-    Curso(String nombreCurso, String categoria) {
-        this.nombreCurso = nombreCurso;
+    Curso(String nombre_curso, String categoria) {
+        this.nombreCurso = nombre_curso;
         this.categoria = categoria;
     }
 

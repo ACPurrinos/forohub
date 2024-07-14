@@ -25,7 +25,7 @@ private Long id;
 
 private String titulo;
 private String mensaje;
-
+@Column(name="id_usuario")
 private Long idUsuario;
 
 @Column(name="fecha_creacion")
@@ -33,13 +33,15 @@ private LocalDateTime fechaDeCreacion= LocalDateTime.now();
 @Enumerated(EnumType.STRING)
 private Estado estado = Estado.ABIERTO;
 @Enumerated(EnumType.STRING)
+@Column(name="nombre_curso")
 private Curso nombreCurso;
 
-    public Topico(DatosRegistroTopico datosRegistroTopico) {
+    public Topico(DatosRegistroTopico datosRegistroTopico /*,Curso curso*/) {
         this.idUsuario= datosRegistroTopico.idUsuario();
         this.nombreCurso=datosRegistroTopico.nombreCurso();
         this.titulo=datosRegistroTopico.titulo();
         this.mensaje= datosRegistroTopico.mensaje();
+        //this.nombreCurso=curso;
     }
 }
 
