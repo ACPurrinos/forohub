@@ -1,5 +1,7 @@
 package com.acpurrinos.forohub.models;
 
+import com.acpurrinos.forohub.dto.DatosActualizacionTopico;
+import com.acpurrinos.forohub.dto.DatosListadoTopicoConId;
 import com.acpurrinos.forohub.dto.DatosRegistroTopico;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -43,5 +45,17 @@ private Curso nombreCurso;
         this.mensaje= datosRegistroTopico.mensaje();
         //this.nombreCurso=curso;
     }
-}
+
+    public void actualizarTopico(DatosActualizacionTopico datosActualizacionTopico) {
+        if(datosActualizacionTopico.nombreCurso() != null){
+        this.nombreCurso=datosActualizacionTopico.nombreCurso();}
+        if(datosActualizacionTopico.titulo() !=null){
+        this.titulo= datosActualizacionTopico.titulo();}
+        if(datosActualizacionTopico.mensaje() !=null){
+        this.mensaje= datosActualizacionTopico.mensaje();}
+        if(datosActualizacionTopico.idUsuario() !=null){
+        this.idUsuario= datosActualizacionTopico.idUsuario();}
+    }}
+
+
 

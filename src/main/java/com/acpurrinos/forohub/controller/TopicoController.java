@@ -1,11 +1,14 @@
 package com.acpurrinos.forohub.controller;
 
+import com.acpurrinos.forohub.dto.DatosActualizacionTopico;
+import com.acpurrinos.forohub.dto.DatosListadoTopicoConId;
 import com.acpurrinos.forohub.dto.DatosListadoTopicos;
 import com.acpurrinos.forohub.dto.DatosRegistroTopico;
 import com.acpurrinos.forohub.models.Curso;
 import com.acpurrinos.forohub.models.Topico;
 import com.acpurrinos.forohub.repository.TopicoRepository;
 import com.acpurrinos.forohub.service.TopicoService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,16 +32,11 @@ public class TopicoController {
     @PostMapping
     public void registraTopico(@RequestBody @Valid DatosRegistroTopico datosRegistroTopico) {
         System.out.println("ESTADO 200 OK");
-        topicoRepository.save(new Topico(datosRegistroTopico));
-
-    }
-
+        topicoRepository.save(new Topico(datosRegistroTopico));}
     ;
-
     //@GetMApping
     //public List<Topico> listarTopicos() {return topicoRepository.findAll();}
-   /* public List<DatosListadoTopicos> listarTopicos(){
-        return topicoRepository.findAll().stream().map(DatosListadoTopicos::new).toList();}*/
+
     @GetMapping
     public Page<DatosListadoTopicos> listarTopicos(@PageableDefault(size=10) Pageable paginacion){
         return topicoRepository.findAll(paginacion).map(DatosListadoTopicos::new);}
@@ -49,14 +47,6 @@ public class TopicoController {
         System.out.println(topicoRepository.findAll(pageable).map(DatosListadoTopicos::new));
         return topicoRepository.findAll(pageable).map(DatosListadoTopicos::new);
     }
-
- /*   @GetMapping("/buscar")
-    public Page<DatosListadoTopicos> buscarTopicos(
-            @RequestParam(required = false) String nombreCurso,
-            @PageableDefault(size = 10) Pageable pageable
-    ) {
-        return topicoRepository.buscarTopicos(nombreCurso, pageable).map(DatosListadoTopicos::new);
-    }*/
 
     @GetMapping("/buscar")
     public Page<DatosListadoTopicos> buscarTopicos(
@@ -76,7 +66,16 @@ public class TopicoController {
             return ResponseEntity.notFound().build();
         }
     }
+    @GetMapping("/conId")
+    public Page<DatosListadoTopicoConId> listarTopicosConId(@PageableDefault(size=10) Pageable paginacion){
+        return topicoRepository.findAll(paginacion).map(DatosListadoTopicoConId::new);}
 
+   @PutMapping("/conId")
+    @Transactional
+    public void actualizarTopico(@RequestBody @Valid DatosActualizacionTopico datosActualizacionTopico) {
+        Topico topico = topicoRepository.getReferenceById(datosActualizacionTopico.id());
+        topico.actualizarTopico(datosActualizacionTopico);
+    }
 
 
 }
