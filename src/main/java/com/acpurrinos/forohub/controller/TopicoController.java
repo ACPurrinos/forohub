@@ -70,12 +70,36 @@ public class TopicoController {
     public Page<DatosListadoTopicoConId> listarTopicosConId(@PageableDefault(size=10) Pageable paginacion){
         return topicoRepository.findAll(paginacion).map(DatosListadoTopicoConId::new);}
 
-   @PutMapping("/conId")
+    //hacer el put con id dinamico
+ /* @PutMapping("/{id}")
     @Transactional
-    public void actualizarTopico(@RequestBody @Valid DatosActualizacionTopico datosActualizacionTopico) {
+    public void actualizarTopico(@PathVariable long id, @RequestBody @Valid DatosActualizacionTopico datosActualizacionTopico) {
         Topico topico = topicoRepository.getReferenceById(datosActualizacionTopico.id());
         topico.actualizarTopico(datosActualizacionTopico);
+    }*/
+
+    @PutMapping("/{id}")
+    @Transactional
+    public void actualizarTopico(@PathVariable long id, @RequestBody @Valid DatosActualizacionTopico datosActualizacionTopico) {
+        Topico topico = topicoRepository.getReferenceById(id);
+        topico.actualizarTopico(datosActualizacionTopico);
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Void> eliminarTopico(@PathVariable Long id) {
+        Optional<Topico> optionalTopico = topicoService.findById(id);
+        if (optionalTopico.isPresent()) {
+            topicoRepository.deleteById(id); // Elimina el tópico por su ID
+            return ResponseEntity.noContent().build(); // Devuelve una respuesta 204 No Content
+        } else {
+            return ResponseEntity.notFound().build(); // Si no se encuentra el tópico, devuelve 404 Not Found
+        }
+    }
+
+
+
+
 
 
 }
