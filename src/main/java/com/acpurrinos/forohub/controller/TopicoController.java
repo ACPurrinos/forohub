@@ -11,11 +11,13 @@ import com.acpurrinos.forohub.service.TopicoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -29,10 +31,25 @@ public class TopicoController {
     @Autowired
     private TopicoService topicoService;
 
-    @PostMapping
+    /*@PostMapping
     public void registraTopico(@RequestBody @Valid DatosRegistroTopico datosRegistroTopico) {
         System.out.println("ESTADO 200 OK");
-        topicoRepository.save(new Topico(datosRegistroTopico));}
+        topicoRepository.save(new Topico(datosRegistroTopico));}*/
+
+    @PostMapping
+    public ResponseEntity<Void> registraTopico(@RequestBody @Valid DatosRegistroTopico datosRegistroTopico) {
+        try {
+            topicoRepository.save(new Topico(datosRegistroTopico));
+            return ResponseEntity.status(HttpStatus.CREATED).build(); // Devuelve 201 Created si se registró correctamente
+        } catch (DataIntegrityViolationException e) {
+            // Captura la excepción de violación de integridad de datos (puede ser por llave duplicada u otro error similar)
+            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Devuelve 409 Conflict si hay una llave duplicada u otro conflicto
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Devuelve 500 Internal Server Error para otros errores
+        }
+    }
+
+
     ;
     //@GetMApping
     //public List<Topico> listarTopicos() {return topicoRepository.findAll();}
@@ -41,12 +58,24 @@ public class TopicoController {
     public Page<DatosListadoTopicos> listarTopicos(@PageableDefault(size=10) Pageable paginacion){
         return topicoRepository.findAll(paginacion).map(DatosListadoTopicos::new);}
 
-    @GetMapping("/ultimos10")// Ruta relativa a la base
+   /* @GetMapping("/ultimos10")// Ruta relativa a la base
     public Page<DatosListadoTopicos> listarUltimosDiezTopicos() {
         Pageable pageable = PageRequest.of(0, 10);
         System.out.println(topicoRepository.findAll(pageable).map(DatosListadoTopicos::new));
         return topicoRepository.findAll(pageable).map(DatosListadoTopicos::new);
-    }
+    }*/
+   @GetMapping("/ultimos10") // Ruta relativa a la base
+   public ResponseEntity<Page<DatosListadoTopicos>> listarUltimosDiezTopicos() {
+       Pageable pageable = PageRequest.of(0, 10);
+       Page<DatosListadoTopicos> pagina = topicoRepository.findAll(pageable).map(DatosListadoTopicos::new);
+
+       if (!pagina.isEmpty()) {
+           return ResponseEntity.ok(pagina);
+       } else {
+           return ResponseEntity.notFound().build();
+       }
+   }
+
 
     @GetMapping("/buscar")
     public Page<DatosListadoTopicos> buscarTopicos(
